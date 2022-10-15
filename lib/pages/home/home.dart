@@ -19,6 +19,81 @@ class HomePage extends StatelessWidget {
       return 'Good Evening';
     }
 
+    modalAdd() {
+      showDialog(
+        context: context,
+        builder: (context) => Container(
+          child: SimpleDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Add Task',
+                  style: headerTextStyle.copyWith(
+                    fontSize: 14,
+                    fontWeight: bold,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.cancel_rounded,
+                    color: blueColor,
+                  ),
+                ),
+              ],
+            ),
+            children: [
+              Divider(),
+              Container(
+                height: 150,
+                margin: EdgeInsets.symmetric(horizontal: defaultMargin),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Type your task',
+                    border: InputBorder.none,
+                  ),
+                  style: primaryTextStyle.copyWith(
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                  minLines: 1,
+                  maxLines: 8,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: blueColor,
+                ),
+                child: TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Add',
+                    style: whiteTextStyle.copyWith(
+                      fontSize: 14,
+                      fontWeight: bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     Widget iconStack() {
       return Container(
         height: 300,
@@ -184,9 +259,12 @@ class HomePage extends StatelessWidget {
                       fontWeight: bold,
                     ),
                   ),
-                  Icon(
-                    Icons.add_circle_outline_rounded,
-                    color: blueColor,
+                  IconButton(
+                    onPressed: modalAdd,
+                    icon: Icon(
+                      Icons.add_circle_outline_rounded,
+                      color: blueColor,
+                    ),
                   ),
                 ],
               ),
