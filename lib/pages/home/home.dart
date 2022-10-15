@@ -1,13 +1,34 @@
 import 'package:analog_clock/analog_clock.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/models/todo_model.dart';
+import 'package:todo/services/todo_service.dart';
 import 'package:todo/theme.dart';
 import 'package:todo/widgets/list_todo.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  TextEditingController titleController = TextEditingController(text: '');
+
+  @override
   Widget build(BuildContext context) {
+    handleAddMessage() async {
+      await TodoService().addTodo(
+        title: titleController.text,
+        isChecked: false,
+      );
+
+      setState(() {
+        titleController.text = '';
+        Navigator.pop(context);
+      });
+    }
+
     String greeting() {
       var hour = DateTime.now().hour;
       if (hour < 12) {
@@ -54,6 +75,7 @@ class HomePage extends StatelessWidget {
                 height: 150,
                 margin: EdgeInsets.symmetric(horizontal: defaultMargin),
                 child: TextFormField(
+                  controller: titleController,
                   decoration: InputDecoration(
                     hintText: 'Type your task',
                     border: InputBorder.none,
@@ -78,7 +100,7 @@ class HomePage extends StatelessWidget {
                   color: blueColor,
                 ),
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: handleAddMessage,
                   child: Text(
                     'Add',
                     style: whiteTextStyle.copyWith(
@@ -273,24 +295,28 @@ class HomePage extends StatelessWidget {
               margin: EdgeInsets.all(10),
               height: 300,
               child: Scrollbar(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                      ListTodo(),
-                    ],
-                  ),
+                child: StreamBuilder<List<TodoModel>>(
+                  stream: TodoService().getTask(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: snapshot.data!
+                              .map((TodoModel todo) => ListTodo(
+                                    id: todo.id,
+                                    title: todo.title,
+                                    isChecked: todo.isChecked,
+                                  ))
+                              .toList(),
+                        ),
+                      );
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
                 ),
               ),
             ),
