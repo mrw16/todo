@@ -8,6 +8,17 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String greeting() {
+      var hour = DateTime.now().hour;
+      if (hour < 12) {
+        return 'Good Morning';
+      }
+      if (hour < 17) {
+        return 'Good Afternoon';
+      }
+      return 'Good Evening';
+    }
+
     Widget iconStack() {
       return Container(
         height: 300,
@@ -121,7 +132,7 @@ class HomePage extends StatelessWidget {
             width: double.infinity,
             margin: EdgeInsets.all(25),
             child: Text(
-              'Good Afternoon',
+              greeting(),
               style: headerTextStyle.copyWith(
                 fontSize: 12,
                 fontWeight: bold,
