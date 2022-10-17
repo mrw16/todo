@@ -42,13 +42,12 @@ class _ListTodoState extends State<ListTodo> {
           children: [
             Checkbox(
               value: widget.isChecked,
-              onChanged: (bool? value) {
-                print(value);
-                setState(
-                  () {
-                    widget.isChecked = value!;
-                  },
-                );
+              onChanged: (value) async {
+                if (value == true) {
+                  await TodoService().checkedTask(widget.id);
+                } else {
+                  await TodoService().checkTask(widget.id);
+                }
               },
             ),
             Expanded(
@@ -60,6 +59,10 @@ class _ListTodoState extends State<ListTodo> {
                       : TextDecoration.none,
                 ),
               ),
+            ),
+            Icon(
+              Icons.chevron_left_rounded,
+              color: secondaryColor,
             ),
           ],
         ),
